@@ -1,0 +1,29 @@
+<div class="toasts" role="region" aria-label="Notifications" aria-live="polite">
+  @for (toast of toastService.toasts(); track toast.id) {
+    <div
+      class="toast"
+      [class.success]="toast.type === 'success'"
+      [class.error]="toast.type === 'error'"
+      [class.info]="toast.type === 'info'"
+      role="status"
+    >
+      <div class="toast-content">
+        @if (toast.type === 'success') {
+          <app-svg-icon name="check" [size]="14" class="toast-icon success" />
+        } @else if (toast.type === 'error') {
+          <app-svg-icon name="x" [size]="14" class="toast-icon danger" />
+        } @else {
+          <app-svg-icon name="sun" [size]="14" class="toast-icon info" />
+        }
+        <span class="toast-msg">{{ toast.message }}</span>
+      </div>
+      <button
+        class="toast-close"
+        (click)="toastService.remove(toast.id)"
+        aria-label="Dismiss notification"
+      >
+        <app-svg-icon name="x" [size]="12" />
+      </button>
+    </div>
+  }
+</div>

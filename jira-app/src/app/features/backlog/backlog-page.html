@@ -1,0 +1,125 @@
+<div class="page-layout">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-left">
+      <h1 class="page-title">Backlog Planning</h1>
+      <p class="page-desc">Plan, prioritize, and structure sprint work items.</p>
+    </div>
+    <div class="header-right">
+      <button class="btn btn-primary" (click)="onCreateIssue()">
+        <app-svg-icon name="plus" [size]="14" />
+        <span>Create Issue</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Filter Bar -->
+  <app-filter-bar />
+
+  <div class="backlog-scroll">
+    <div class="backlog-container">
+      <!-- Section 1: Active Sprint 1 Panel -->
+      <div class="sprint-panel">
+        <div class="panel-header" (click)="toggleSprintExpanded()">
+          <app-svg-icon
+            [name]="isSprintExpanded() ? 'chevron-down' : 'chevron-right'"
+            [size]="14"
+          />
+          <span class="panel-title">Sprint 1</span>
+          <span class="badge active">Active Sprint</span>
+          <span class="meta-count">{{ sprintIssues().length }} issues</span>
+          <div class="spacer"></div>
+          <span class="pts-pill" title="Total Story Points in Sprint 1">
+            {{ sprintPoints() }} pts
+          </span>
+        </div>
+
+        @if (isSprintExpanded()) {
+          <div class="issue-list">
+            @for (issue of sprintIssues(); track issue.id) {
+              <div
+                class="issue-row"
+                (click)="onIssueClick(issue)"
+                role="button"
+                tabindex="0"
+              >
+                <app-issue-type-icon [type]="issue.type" [size]="14" />
+                <span class="key mono">{{ issue.key }}</span>
+                <span class="summary">{{ issue.title }}</span>
+
+                <div class="spacer"></div>
+
+                <app-issue-priority-icon [priority]="issue.priority" [size]="14" />
+                <span class="status-tag" [attr.data-status]="issue.status">
+                  {{ issue.status.replace('_', ' ') }}
+                </span>
+
+                @if (issue.estimate) {
+                  <span class="pts-tag">{{ issue.estimate }}</span>
+                }
+
+                <app-user-avatar [user]="issue.assignee || null" size="sm" />
+              </div>
+            } @empty {
+              <div class="empty-row">No active sprint issues. Move issues from Backlog below.</div>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Section 2: Product Backlog Panel -->
+      <div class="sprint-panel backlog-section">
+        <div class="panel-header" (click)="toggleBacklogExpanded()">
+          <app-svg-icon
+            [name]="isBacklogExpanded() ? 'chevron-down' : 'chevron-right'"
+            [size]="14"
+          />
+          <span class="panel-title">Product Backlog</span>
+          <span class="meta-count">{{ backlogIssues().length }} issues</span>
+          <div class="spacer"></div>
+          <span class="pts-pill" title="Total Backlog Story Points">
+            {{ backlogPoints() }} pts
+          </span>
+        </div>
+
+        @if (isBacklogExpanded()) {
+          <div class="issue-list">
+            @for (issue of backlogIssues(); track issue.id) {
+              <div
+                class="issue-row"
+                (click)="onIssueClick(issue)"
+                role="button"
+                tabindex="0"
+              >
+                <app-issue-type-icon [type]="issue.type" [size]="14" />
+                <span class="key mono">{{ issue.key }}</span>
+                <span class="summary">{{ issue.title }}</span>
+
+                <div class="spacer"></div>
+
+                <button
+                  class="btn btn-secondary btn-xs move-btn"
+                  (click)="moveToSprint(issue, $event)"
+                  title="Move to Active Sprint (In Progress)"
+                >
+                  <app-svg-icon name="arrow-right" [size]="12" />
+                  <span>Move to Sprint</span>
+                </button>
+
+                <app-issue-priority-icon [priority]="issue.priority" [size]="14" />
+
+                @if (issue.estimate) {
+                  <span class="pts-tag">{{ issue.estimate }}</span>
+                }
+
+                <app-user-avatar [user]="issue.assignee || null" size="sm" />
+              </div>
+            } @empty {
+              <div class="empty-row">Product backlog is empty! All items are committed to active sprint.</div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

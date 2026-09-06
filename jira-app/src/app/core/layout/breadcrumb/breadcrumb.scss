@@ -1,0 +1,36 @@
+.breadcrumb {
+  height: var(--breadcrumb-height);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 16px;
+  font-size: 13px;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+  background-color: var(--surface);
+  flex-shrink: 0;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.crumb-link {
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 120ms ease;
+
+  &:hover {
+    color: var(--text);
+    text-decoration: underline;
+  }
+}
+
+.crumb-sep {
+  color: var(--text-subtle);
+  font-size: 11px;
+  user-select: none;
+}
+
+.crumb-leaf {
+  color: var(--text);
+  font-weight: 600;
+}

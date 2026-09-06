@@ -1,0 +1,125 @@
+:host {
+  display: flex;
+  height: 100%;
+  flex: 0 0 272px;
+  width: 272px;
+}
+
+.column {
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+  background-color: var(--surface-sunken);
+  border-radius: var(--radius-md);
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  user-select: none;
+}
+
+.column-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px 8px;
+  flex-shrink: 0;
+
+  .column-title {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    line-height: 1;
+    margin: 0;
+  }
+
+  .column-count {
+    color: var(--text-subtle);
+    font-size: 12px;
+    font-weight: 600;
+  }
+}
+
+.column-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-height: 80px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 2px;
+  transition: background-color 150ms ease;
+
+  &.cdk-drop-list-dragging {
+    cursor: grabbing;
+  }
+
+  &.cdk-drop-list-receiving {
+    background-color: rgba(37, 99, 235, 0.04);
+  }
+}
+
+.drag-card-wrapper {
+  display: block;
+  width: 100%;
+  border-radius: var(--radius-md);
+
+  &.cdk-drag-animating {
+    transition: transform 200ms ease-out;
+  }
+}
+
+/* Custom CDK Drop Placeholder */
+.custom-drag-placeholder {
+  min-height: 76px;
+  border: 2px dashed var(--border-strong);
+  border-radius: var(--radius-md);
+  background-color: transparent;
+  margin-bottom: 6px;
+  transition: transform 200ms ease-out;
+}
+
+/* Custom CDK Drag Preview */
+.custom-drag-preview {
+  box-sizing: border-box;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-drag);
+  transform: rotate(3deg);
+  opacity: 0.98;
+  z-index: var(--z-modal);
+  cursor: grabbing;
+  pointer-events: none;
+  width: 260px;
+}
+
+.column-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 0;
+  color: var(--text-subtle);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.add-issue-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 6px 8px;
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  margin-top: 4px;
+  flex-shrink: 0;
+  transition: background-color 120ms ease, color 120ms ease;
+
+  &:hover {
+    background-color: var(--border);
+    color: var(--text);
+  }
+}

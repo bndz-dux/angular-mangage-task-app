@@ -1,0 +1,119 @@
+<header class="topbar">
+  <!-- Mobile Hamburger -->
+  <button
+    class="icon-btn menu-toggle-mobile"
+    (click)="sidebarService.toggleMobile()"
+    aria-label="Open navigation"
+  >
+    <app-svg-icon name="menu" [size]="18" />
+  </button>
+
+  <!-- Desktop Sidebar Toggle -->
+  <button
+    class="icon-btn sidebar-toggle-btn"
+    (click)="sidebarService.toggleCollapsed()"
+    [attr.aria-label]="sidebarService.isCollapsed() ? 'Expand sidebar' : 'Collapse sidebar'"
+    [title]="sidebarService.isCollapsed() ? 'Expand sidebar' : 'Collapse sidebar'"
+  >
+    <app-svg-icon name="sidebar-toggle" [size]="16" />
+  </button>
+
+  <!-- Brand Identity -->
+  <div class="brand">
+    <span class="brand-badge">MJ</span>
+    <span class="brand-name">Mini-Jira</span>
+  </div>
+
+  <!-- Global Search Bar -->
+  <div class="search">
+    <app-svg-icon name="search" [size]="14" class="search-icon" />
+    <input
+      #searchInput
+      type="search"
+      id="global-search"
+      placeholder="Search issues by key or text  ( / )"
+      aria-label="Search issues"
+      [value]="projectStore.searchTerm()"
+      (input)="onSearchInput($event)"
+      (focus)="onSearchFocus()"
+      (blur)="onSearchBlur()"
+    />
+  </div>
+
+  <div class="topbar-spacer"></div>
+
+  <!-- Quick Create Button -->
+  <button
+    class="btn btn-primary create-btn"
+    (click)="onCreateIssue()"
+    title="Create Issue (Shortcut: c)"
+  >
+    <app-svg-icon name="plus" [size]="14" />
+    <span>Create</span>
+  </button>
+
+  <!-- Theme Toggle Button -->
+  <button
+    class="icon-btn"
+    (click)="themeService.toggleTheme()"
+    [attr.aria-label]="themeService.theme() === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'"
+    [title]="themeService.theme() === 'dark' ? 'Light mode' : 'Dark mode'"
+  >
+    @if (themeService.theme() === 'dark') {
+      <app-svg-icon name="sun" [size]="16" />
+    } @else {
+      <app-svg-icon name="moon" [size]="16" />
+    }
+  </button>
+
+  <!-- GitHub Link -->
+  <a
+    class="icon-btn"
+    href="https://github.com"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="GitHub repository"
+    title="GitHub repository"
+  >
+    <app-svg-icon name="github" [size]="16" />
+  </a>
+
+  <!-- User Switcher Dropdown -->
+  <div class="menu-wrap" #userMenuWrap>
+    <button
+      class="user-btn"
+      (click)="toggleUserMenu()"
+      [attr.aria-expanded]="isUserMenuOpen()"
+      aria-haspopup="true"
+      aria-label="User profile and switcher"
+    >
+      <app-user-avatar [user]="userService.currentUser()" size="md" />
+      <app-svg-icon name="chevron-down" [size]="12" class="chevron" />
+    </button>
+
+    @if (isUserMenuOpen()) {
+      <div class="menu user-menu" role="menu">
+        <div class="menu-label">Viewing as</div>
+        <div class="menu-user-list">
+          @for (user of userService.users(); track user.id) {
+            <button
+              class="menu-item"
+              [class.active]="user.id === userService.currentUser().id"
+              (click)="selectUser(user)"
+              role="menuitem"
+            >
+              <app-user-avatar [user]="user" size="sm" />
+              <div class="user-info">
+                <span class="user-name">{{ user.name }}</span>
+                <span class="user-role">{{ user.role }}</span>
+              </div>
+              @if (user.id === userService.currentUser().id) {
+                <app-svg-icon name="check" [size]="14" class="check-icon" />
+              }
+            </button>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</header>

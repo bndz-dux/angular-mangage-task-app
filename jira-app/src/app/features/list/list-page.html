@@ -1,0 +1,141 @@
+<div class="page-layout">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-left">
+      <h1 class="page-title">List View</h1>
+      <p class="page-desc">Tabular, dense view of all issues with instant column sorting.</p>
+    </div>
+    <div class="header-right">
+      <span class="count-badge">{{ sortedIssues().length }} issues</span>
+      <button class="btn btn-primary" (click)="onCreateIssue()">
+        <app-svg-icon name="plus" [size]="14" />
+        <span>Create Issue</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Filter Bar -->
+  <app-filter-bar />
+
+  <div class="list-scroll">
+    <div class="table-container">
+      <table class="jira-table" aria-label="Issue List Table">
+        <thead>
+          <tr>
+            <th class="col-type">Type</th>
+            <th class="col-key sortable" (click)="toggleSort('key')">
+              <span>Key</span>
+              @if (sortField() === 'key') {
+                <app-svg-icon
+                  [name]="sortOrder() === 'asc' ? 'arrow-up' : 'arrow-down'"
+                  [size]="12"
+                />
+              }
+            </th>
+            <th class="col-title sortable" (click)="toggleSort('title')">
+              <span>Title</span>
+              @if (sortField() === 'title') {
+                <app-svg-icon
+                  [name]="sortOrder() === 'asc' ? 'arrow-up' : 'arrow-down'"
+                  [size]="12"
+                />
+              }
+            </th>
+            <th class="col-status sortable" (click)="toggleSort('status')">
+              <span>Status</span>
+              @if (sortField() === 'status') {
+                <app-svg-icon
+                  [name]="sortOrder() === 'asc' ? 'arrow-up' : 'arrow-down'"
+                  [size]="12"
+                />
+              }
+            </th>
+            <th class="col-prio sortable" (click)="toggleSort('priority')">
+              <span>Priority</span>
+              @if (sortField() === 'priority') {
+                <app-svg-icon
+                  [name]="sortOrder() === 'asc' ? 'arrow-up' : 'arrow-down'"
+                  [size]="12"
+                />
+              }
+            </th>
+            <th class="col-assignee">Assignee</th>
+            <th class="col-pts sortable" (click)="toggleSort('estimate')">
+              <span>Pts</span>
+              @if (sortField() === 'estimate') {
+                <app-svg-icon
+                  [name]="sortOrder() === 'asc' ? 'arrow-up' : 'arrow-down'"
+                  [size]="12"
+                />
+              }
+            </th>
+            <th class="col-updated sortable" (click)="toggleSort('updatedAt')">
+              <span>Updated</span>
+              @if (sortField() === 'updatedAt') {
+                <app-svg-icon
+                  [name]="sortOrder() === 'asc' ? 'arrow-up' : 'arrow-down'"
+                  [size]="12"
+                />
+              }
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (issue of sortedIssues(); track issue.id) {
+            <tr
+              class="table-row"
+              (click)="onIssueClick(issue)"
+              role="button"
+              tabindex="0"
+            >
+              <td class="col-type">
+                <app-issue-type-icon [type]="issue.type" [size]="14" />
+              </td>
+              <td class="col-key mono">{{ issue.key }}</td>
+              <td class="col-title" [title]="issue.title">{{ issue.title }}</td>
+              <td class="col-status">
+                <span class="status-tag" [attr.data-status]="issue.status">
+                  {{ issue.status.replace('_', ' ') }}
+                </span>
+              </td>
+              <td class="col-prio">
+                <div class="prio-cell">
+                  <app-issue-priority-icon [priority]="issue.priority" [size]="14" />
+                  <span class="prio-label">{{ issue.priority }}</span>
+                </div>
+              </td>
+              <td class="col-assignee">
+                @if (issue.assignee) {
+                  <div class="assignee-cell">
+                    <app-user-avatar [user]="issue.assignee" size="sm" />
+                    <span>{{ issue.assignee.name }}</span>
+                  </div>
+                } @else {
+                  <span class="unassigned">Unassigned</span>
+                }
+              </td>
+              <td class="col-pts">
+                @if (issue.estimate) {
+                  <span class="pts-badge">{{ issue.estimate }}</span>
+                } @else {
+                  <span class="muted">-</span>
+                }
+              </td>
+              <td class="col-updated">
+                <time [attr.datetime]="issue.updatedAt" [title]="issue.updatedAt">
+                  {{ getRelativeTime(issue.updatedAt) }}
+                </time>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="8" class="empty-cell">
+                No issues match your current filters.
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

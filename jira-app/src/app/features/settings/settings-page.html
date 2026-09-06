@@ -1,0 +1,112 @@
+<div class="settings-container">
+  <!-- Settings Page Header -->
+  <div class="settings-header">
+    <h1>Project Settings</h1>
+    <p>Manage project details, active user perspectives, and demo workspace data.</p>
+  </div>
+
+  <div class="settings-content">
+    <!-- Section 1: Project Overview Card -->
+    <div class="settings-card">
+      <div class="card-head">
+        <h2>Project Overview</h2>
+      </div>
+      <div class="card-body">
+        <div class="form-grid-2">
+          <div class="form-row">
+            <label class="field-label" for="proj-name">Project Name</label>
+            <input
+              type="text"
+              id="proj-name"
+              [value]="projectName()"
+              (change)="updateProjectName($event)"
+            />
+          </div>
+
+          <div class="form-row">
+            <label class="field-label" for="proj-key">Project Key</label>
+            <input
+              type="text"
+              id="proj-key"
+              value="MJ"
+              disabled
+              class="mono"
+              title="Project key cannot be modified"
+            />
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-row">
+            <label class="field-label">Project Lead</label>
+            <div class="lead-info">
+              <app-user-avatar [user]="userService.users()[0]" size="sm" />
+              <span>{{ userService.users()[0].name }} ({{ userService.users()[0].role }})</span>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <label class="field-label">Project Category</label>
+            <input type="text" value="Software Engineering" disabled />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2: Active User Perspective Switcher -->
+    <div class="settings-card">
+      <div class="card-head">
+        <h2>Active User Perspective</h2>
+        <p class="subtitle">
+          Select a team member to simulate their perspective across assignee filters, comment authorship, and reporter metadata.
+        </p>
+      </div>
+      <div class="card-body">
+        <div class="user-cards-grid">
+          @for (user of userService.users(); track user.id) {
+            <div
+              class="user-card"
+              [class.active]="user.id === userService.currentUser().id"
+              (click)="userService.switchUser(user)"
+              role="button"
+              tabindex="0"
+              [attr.aria-pressed]="user.id === userService.currentUser().id"
+            >
+              <div class="user-card-header">
+                <app-user-avatar [user]="user" size="md" />
+                @if (user.id === userService.currentUser().id) {
+                  <span class="active-badge">Active</span>
+                }
+              </div>
+              <div class="user-card-body">
+                <span class="name">{{ user.name }}</span>
+                <span class="role">{{ user.role }}</span>
+                <span class="email">{{ user.email }}</span>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 3: Demo Workspace Management -->
+    <div class="settings-card danger-zone">
+      <div class="card-head">
+        <h2>Demo Workspace Management</h2>
+        <p class="subtitle">
+          Reset all issues, columns, comments, and filters back to original demonstration seed data.
+        </p>
+      </div>
+      <div class="card-body reset-row">
+        <div class="reset-desc">
+          <strong>Reset to Demo Data</strong>
+          <span>This will replace current issue state with 12 pre-seeded software development tasks across Backlog, In Progress, In Review, and Done.</span>
+        </div>
+        <button class="btn btn-secondary" (click)="resetDemoWorkspace()">
+          <app-svg-icon name="reset" [size]="14" />
+          <span>Reset Demo Data</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

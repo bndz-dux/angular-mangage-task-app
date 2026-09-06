@@ -1,0 +1,72 @@
+<div class="filterbar">
+  <!-- Avatar Stack for Multi-select Assignee Filter -->
+  <div class="avatar-stack" role="group" aria-label="Filter by assignee">
+    @for (user of userService.users(); track user.id) {
+      <button
+        class="avatar-btn"
+        [class.on]="projectStore.assigneeFilter().includes(user.id)"
+        (click)="projectStore.toggleAssigneeFilter(user.id)"
+        [attr.aria-pressed]="projectStore.assigneeFilter().includes(user.id)"
+        [title]="'Filter issues assigned to ' + user.name + ' (' + user.role + ')'"
+      >
+        <app-user-avatar [user]="user" size="sm" />
+      </button>
+    }
+  </div>
+
+  <!-- "Only My Issues" Quick Filter Chip -->
+  <button
+    class="chip"
+    [class.on]="projectStore.onlyMineFilter()"
+    (click)="projectStore.toggleOnlyMine()"
+    [attr.aria-pressed]="projectStore.onlyMineFilter()"
+    title="Filter issues assigned to you"
+  >
+    <app-svg-icon name="user" [size]="12" />
+    <span>Only my issues</span>
+  </button>
+
+  <!-- "Recently Updated" Quick Filter Chip -->
+  <button
+    class="chip"
+    [class.on]="projectStore.recentFilter()"
+    (click)="projectStore.toggleRecent()"
+    [attr.aria-pressed]="projectStore.recentFilter()"
+    title="Show issues updated in the last 48 hours"
+  >
+    <app-svg-icon name="reset" [size]="12" />
+    <span>Recently updated</span>
+  </button>
+
+  <!-- "Issue Type" Dropdown Select Chip -->
+  <label
+    class="chip type-chip"
+    [class.on]="!!projectStore.typeFilter()"
+    title="Filter by issue type"
+  >
+    <app-svg-icon name="kanban" [size]="12" />
+    <select
+      [value]="projectStore.typeFilter()"
+      (change)="onTypeChange($event)"
+      aria-label="Filter by issue type"
+    >
+      <option value="">All types</option>
+      <option value="story">Story</option>
+      <option value="task">Task</option>
+      <option value="bug">Bug</option>
+      <option value="epic">Epic</option>
+    </select>
+  </label>
+
+  <!-- One-Click "Clear All Filters" Action with Badge Count -->
+  @if (projectStore.isFilterActive()) {
+    <button
+      class="btn btn-subtle clear"
+      (click)="projectStore.clearFilters()"
+      title="Clear all active filters"
+    >
+      <span>Clear all</span>
+      <span class="filter-count">{{ projectStore.activeFilterCount() }}</span>
+    </button>
+  }
+</div>

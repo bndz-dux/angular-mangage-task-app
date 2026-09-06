@@ -1,0 +1,26 @@
+@if (projectStore.confirmDeleteIssue(); as issue) {
+  <div class="modal" (click)="onBackdropClick($event)" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="confirm-modal-title">
+    <div class="modal-card confirm-card" (click)="$event.stopPropagation()">
+      <div class="modal-head">
+        <h2 id="confirm-modal-title">Delete Issue</h2>
+        <button class="icon-btn" (click)="projectStore.closeConfirmDelete()" aria-label="Close modal">
+          <app-svg-icon name="x" [size]="16" />
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <p>Are you sure you want to delete <strong>{{ issue.key }}: {{ issue.title }}</strong>?</p>
+        <p class="warning-text">This action cannot be undone.</p>
+      </div>
+
+      <div class="modal-foot">
+        <button class="btn btn-secondary" (click)="projectStore.closeConfirmDelete()" #cancelBtn>
+          Cancel
+        </button>
+        <button class="btn btn-danger" (click)="onConfirmDelete(issue.id)">
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+}

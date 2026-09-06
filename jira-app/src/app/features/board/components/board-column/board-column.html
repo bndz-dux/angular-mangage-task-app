@@ -1,0 +1,53 @@
+<div class="column" [attr.data-status]="status()">
+  <!-- Column Header -->
+  <div class="column-head">
+    <h2 class="column-title">{{ title() }}</h2>
+    <span class="column-count" [attr.aria-label]="count() + ' issues'">{{ count() }}</span>
+  </div>
+
+  <!-- Column Body (CDK Drop List) -->
+  <div
+    class="column-body"
+    cdkDropList
+    [id]="'col-' + status()"
+    [cdkDropListData]="issues()"
+    [cdkDropListConnectedTo]="connectedDropLists()"
+    (cdkDropListDropped)="onDrop($event)"
+  >
+    @for (issue of issues(); track issue.id) {
+      <div
+        class="drag-card-wrapper"
+        cdkDrag
+        [cdkDragData]="issue"
+      >
+        <!-- Actual Issue Card Component -->
+        <app-issue-card
+          [issue]="issue"
+          (cardClick)="onIssueClick($event)"
+        />
+
+        <!-- Custom CDK Drag Placeholder -->
+        <div *cdkDragPlaceholder class="custom-drag-placeholder"></div>
+
+        <!-- Custom CDK Drag Preview -->
+        <div *cdkDragPreview class="custom-drag-preview">
+          <app-issue-card [issue]="issue" />
+        </div>
+      </div>
+    } @empty {
+      <div class="column-empty">
+        <span>No issues</span>
+      </div>
+    }
+  </div>
+
+  <!-- Quick inline "+ Create issue" CTA -->
+  <button
+    class="add-issue-btn"
+    (click)="onAddIssueClick()"
+    title="Create issue in {{ title() }}"
+  >
+    <app-svg-icon name="plus" [size]="14" />
+    <span>Create issue</span>
+  </button>
+</div>

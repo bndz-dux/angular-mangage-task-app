@@ -1,0 +1,46 @@
+<div class="board-wrapper">
+  <!-- Filter Bar -->
+  <app-filter-bar />
+
+  <!-- Accessibility Live Region for Screen Readers -->
+  <div class="sr-only" aria-live="polite">
+    Showing {{ projectStore.filteredIssues().length }} of {{ projectStore.totalIssuesCount() }} issues
+  </div>
+
+  <!-- Board Scrollable Area or Zero Result Empty State -->
+  @if (projectStore.filteredIssues().length > 0) {
+    <div class="board-scroll" cdkDropListGroup>
+      <div class="board" aria-label="Kanban Board">
+        @for (col of columns; track col.id) {
+          <app-board-column
+            [status]="col.id"
+            [title]="col.title"
+            [issues]="projectStore.issuesByStatus()[col.id]"
+            [count]="projectStore.columnCounts()[col.id]"
+            [connectedDropLists]="allDropListIds"
+            (drop)="onColumnDrop($event, col.id)"
+            (issueClick)="onIssueSelected($event)"
+            (createClick)="onCreateIssueInColumn($event)"
+          />
+        }
+      </div>
+    </div>
+  } @else {
+    <!-- Empty Result Banner when filters match 0 issues -->
+    <div class="zero-result-container">
+      <div class="zero-result-card">
+        <div class="search-icon-circle">
+          <app-svg-icon name="search" [size]="28" />
+        </div>
+        <h2>No issues match your search or filters</h2>
+        <p>Try clearing your active filters or searching for another keyword.</p>
+        <button
+          class="btn btn-primary"
+          (click)="projectStore.clearFilters()"
+        >
+          Clear all filters ({{ projectStore.activeFilterCount() }})
+        </button>
+      </div>
+    </div>
+  }
+</div>

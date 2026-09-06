@@ -1,0 +1,87 @@
+<aside
+  class="sidebar"
+  [class.collapsed]="sidebarService.isCollapsed()"
+  [class.open]="sidebarService.isMobileOpen()"
+>
+  <!-- Project Identifier -->
+  <div class="project-id" title="Mini-Jira (MJ)">
+    <span class="project-badge">MJ</span>
+    <div class="project-meta">
+      <div class="project-name">Mini-Jira</div>
+      <div class="project-key mono">MJ</div>
+    </div>
+  </div>
+
+  <!-- Navigation Menu -->
+  <nav class="nav" aria-label="Main Navigation">
+    <a
+      routerLink="/projects/MJ/board"
+      routerLinkActive="active"
+      (click)="onNavClick()"
+      title="Kanban Board"
+    >
+      <app-svg-icon name="kanban" [size]="16" />
+      <span class="nav-label">Kanban Board</span>
+    </a>
+
+    <a
+      routerLink="/projects/MJ/backlog"
+      routerLinkActive="active"
+      (click)="onNavClick()"
+      title="Backlog"
+    >
+      <app-svg-icon name="backlog" [size]="16" />
+      <span class="nav-label">Backlog</span>
+    </a>
+
+    <a
+      routerLink="/projects/MJ/list"
+      routerLinkActive="active"
+      (click)="onNavClick()"
+      title="List View"
+    >
+      <app-svg-icon name="list" [size]="16" />
+      <span class="nav-label">List View</span>
+    </a>
+
+    <a
+      routerLink="/projects/MJ/releases"
+      routerLinkActive="active"
+      (click)="onNavClick()"
+      title="Releases"
+    >
+      <app-svg-icon name="releases" [size]="16" />
+      <span class="nav-label">Releases</span>
+    </a>
+
+    <a
+      routerLink="/projects/MJ/settings"
+      routerLinkActive="active"
+      (click)="onNavClick()"
+      title="Project Settings"
+    >
+      <app-svg-icon name="settings" [size]="16" />
+      <span class="nav-label">Project Settings</span>
+    </a>
+  </nav>
+
+  <!-- Sidebar Footer -->
+  <div class="sidebar-foot">
+    <button
+      class="foot-action-btn"
+      (click)="onResetDemoData()"
+      title="Reset demo data"
+    >
+      <app-svg-icon name="reset" [size]="16" />
+      <span class="foot-label">Reset demo data</span>
+    </button>
+  </div>
+</aside>
+
+@if (sidebarService.isMobileOpen()) {
+  <div
+    class="sidebar-backdrop"
+    (click)="sidebarService.closeMobile()"
+    aria-hidden="true"
+  ></div>
+}

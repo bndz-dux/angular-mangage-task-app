@@ -1,0 +1,209 @@
+@if (projectStore.selectedIssue(); as issue) {
+  <!-- Scrim / Backdrop -->
+  <div
+    class="scrim"
+    [class.show]="true"
+    (click)="closeDrawer()"
+    aria-hidden="true"
+  ></div>
+
+  <!-- Slide-in Drawer -->
+  <aside
+    class="drawer"
+    [class.show]="true"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-label]="'Issue detail for ' + issue.key"
+  >
+    <!-- Drawer Header -->
+    <div class="drawer-head">
+      <app-issue-type-icon [type]="issue.type" [size]="16" />
+      <span class="key mono">{{ issue.key }}</span>
+
+      <div class="spacer"></div>
+
+      <button
+        class="icon-btn danger-hover"
+        (click)="onDeleteClick(issue.id)"
+        title="Delete issue"
+        aria-label="Delete issue"
+      >
+        <app-svg-icon name="x" [size]="16" />
+      </button>
+
+      <button
+        class="icon-btn"
+        (click)="closeDrawer()"
+        title="Close drawer (Esc)"
+        aria-label="Close drawer"
+      >
+        <app-svg-icon name="x" [size]="16" />
+      </button>
+    </div>
+
+    <!-- Drawer Body Grid -->
+    <div class="drawer-body">
+      <div class="drawer-grid">
+        <!-- Main Content Area (Title, Description, Comments) -->
+        <div class="main-col">
+          <!-- Inline Editable Title -->
+          <div class="title-wrap">
+            <textarea
+              #titleInput
+              class="edit-title"
+              [value]="issue.title"
+              rows="2"
+              (blur)="saveTitle(issue, titleInput.value)"
+              (keydown.enter)="saveTitleOnEnter($event, issue, titleInput.value)"
+              (keydown.escape)="titleInput.value = issue.title; titleInput.blur()"
+              placeholder="Issue title"
+            ></textarea>
+          </div>
+
+          <!-- Description Section -->
+          <div class="section-box">
+            <label class="field-label" for="detail-desc">Description</label>
+            <textarea
+              #descInput
+              id="detail-desc"
+              class="desc-box"
+              [value]="issue.description"
+              (blur)="saveDescription(issue, descInput.value)"
+              placeholder="Add a detailed description..."
+            ></textarea>
+          </div>
+
+          <!-- Comments & Activity Stream Section -->
+          <div class="comments-section">
+            <h3>Comments & Activity ({{ issue.comments.length }})</h3>
+
+            <!-- Add Comment Form -->
+            <div class="comment-add">
+              <app-user-avatar [user]="userService.currentUser()" size="sm" />
+              <div class="comment-input-wrap">
+                <textarea
+                  #newCommentInput
+                  placeholder="Add a comment..."
+                  rows="2"
+                ></textarea>
+                @if (newCommentInput.value.trim()) {
+                  <div class="comment-actions-bar">
+                    <button
+                      class="btn btn-primary btn-sm"
+                      (click)="submitComment(issue.id, newCommentInput)"
+                    >
+                      Save
+                    </button>
+                  </div>
+                }
+              </div>
+            </div>
+
+            <!-- Existing Comments List -->
+            <div class="comments-list">
+              @for (comment of issue.comments; track comment.id) {
+                <div class="comment-item">
+                  <app-user-avatar [user]="comment.user" size="sm" />
+                  <div class="comment-content">
+                    <div class="comment-header">
+                      <span class="who">{{ comment.user.name }}</span>
+                      <span class="when" [title]="comment.createdAt">{{ getRelativeTime(comment.createdAt) }}</span>
+                    </div>
+                    <div class="text">{{ comment.body }}</div>
+                    <div class="actions">
+                      <button (click)="projectStore.deleteComment(issue.id, comment.id)">Delete</button>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Metadata Rail -->
+        <div class="rail">
+          <!-- Status Dropdown -->
+          <div class="row">
+            <label class="field-label" for="detail-status">Status</label>
+            <select
+              id="detail-status"
+              [value]="issue.status"
+              (change)="onStatusChange(issue, $event)"
+            >
+              @for (col of columns; track col.id) {
+                <option [value]="col.id">{{ col.title }}</option>
+              }
+            </select>
+          </div>
+
+          <!-- Priority Dropdown -->
+          <div class="row">
+            <label class="field-label" for="detail-priority">Priority</label>
+            <select
+              id="detail-priority"
+              [value]="issue.priority"
+              (change)="onPriorityChange(issue, $event)"
+            >
+              <option value="highest">Highest ⏫</option>
+              <option value="high">High 🔼</option>
+              <option value="medium">Medium 🟰</option>
+              <option value="low">Low 🔽</option>
+              <option value="lowest">Lowest ⏬</option>
+            </select>
+          </div>
+
+          <!-- Assignee Dropdown -->
+          <div class="row">
+            <label class="field-label" for="detail-assignee">Assignee</label>
+            <select
+              id="detail-assignee"
+              [value]="issue.assigneeId || ''"
+              (change)="onAssigneeChange(issue, $event)"
+            >
+              <option value="">Unassigned</option>
+              @for (user of userService.users(); track user.id) {
+                <option [value]="user.id">{{ user.name }}</option>
+              }
+            </select>
+          </div>
+
+          <!-- Story Points Estimate Input -->
+          <div class="row">
+            <label class="field-label" for="detail-estimate">Story Points</label>
+            <input
+              type="number"
+              id="detail-estimate"
+              [value]="issue.estimate ?? ''"
+              (blur)="onEstimateChange(issue, $event)"
+              min="0"
+              placeholder="None"
+            />
+          </div>
+
+          <!-- Reporter Info -->
+          <div class="row">
+            <label class="field-label">Reporter</label>
+            <div class="reporter-info">
+              <app-user-avatar [user]="issue.reporter" size="sm" />
+              <span>{{ issue.reporter.name }}</span>
+            </div>
+          </div>
+
+          <!-- Date Timestamps -->
+          <div class="dates">
+            <div>Created: <time [attr.datetime]="issue.createdAt" [title]="issue.createdAt">{{ getRelativeTime(issue.createdAt) }}</time></div>
+            <div>Updated: <time [attr.datetime]="issue.updatedAt" [title]="issue.updatedAt">{{ getRelativeTime(issue.updatedAt) }}</time></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Drawer Foot Actions -->
+    <div class="drawer-foot">
+      <button class="btn btn-subtle danger" (click)="onDeleteClick(issue.id)">
+        <app-svg-icon name="x" [size]="14" />
+        <span>Delete issue</span>
+      </button>
+    </div>
+  </aside>
+}

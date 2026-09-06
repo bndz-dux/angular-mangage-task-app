@@ -1,0 +1,102 @@
+<div
+  class="card"
+  [class.type-story]="issue().type === 'story'"
+  [class.type-task]="issue().type === 'task'"
+  [class.type-bug]="issue().type === 'bug'"
+  [class.type-epic]="issue().type === 'epic'"
+  [class.updated]="isRecentlyUpdated()"
+  (click)="onCardClick($event)"
+  tabindex="0"
+  role="button"
+  [attr.aria-label]="'Issue ' + issue().key + ': ' + issue().title"
+>
+  <!-- Card Header & Summary -->
+  <div class="summary" [title]="issue().title">
+    {{ issue().title }}
+  </div>
+
+  <!-- Card Metadata Footer -->
+  <div class="meta">
+    <!-- Left: Type Icon + Issue Key -->
+    <div class="meta-left">
+      <app-issue-type-icon [type]="issue().type" [size]="14" />
+      <span class="key mono">{{ issue().key }}</span>
+    </div>
+
+    <div class="spacer"></div>
+
+    <!-- Right: Priority + Estimate Pill + Assignee Avatar -->
+    <div class="meta-right">
+      <app-issue-priority-icon [priority]="issue().priority" [size]="14" />
+
+      @if (issue().estimate !== undefined) {
+        <span class="points" title="Estimate: {{ issue().estimate }} story points">
+          {{ issue().estimate }}
+        </span>
+      }
+
+      <app-user-avatar [user]="issue().assignee || null" size="sm" />
+    </div>
+  </div>
+
+  <!-- Accessible Quick Actions Menu Trigger -->
+  <div class="menu-wrap" #menuWrap>
+    <button
+      class="card-menu-btn"
+      (click)="toggleMenu($event)"
+      [attr.aria-expanded]="isMenuOpen()"
+      aria-haspopup="true"
+      aria-label="Quick actions for {{ issue().key }}"
+      title="Quick actions"
+    >
+      <app-svg-icon name="more-horizontal" [size]="14" />
+    </button>
+
+    @if (isMenuOpen()) {
+      <div class="menu card-menu" role="menu" (click)="$event.stopPropagation()">
+        <div class="menu-label">Move to column</div>
+        @for (col of columns; track col.id) {
+          @if (col.id !== issue().status) {
+            <button
+              class="menu-item"
+              (click)="moveToStatus(col.id, $event)"
+              role="menuitem"
+            >
+              <app-svg-icon name="arrow-right" [size]="12" />
+              <span>{{ col.title }}</span>
+            </button>
+          }
+        }
+
+        <div class="menu-divider"></div>
+        <div class="menu-label">Reorder</div>
+        <button
+          class="menu-item"
+          (click)="movePosition('up', $event)"
+          role="menuitem"
+        >
+          <app-svg-icon name="arrow-up" [size]="12" />
+          <span>Move up</span>
+        </button>
+        <button
+          class="menu-item"
+          (click)="movePosition('down', $event)"
+          role="menuitem"
+        >
+          <app-svg-icon name="arrow-down" [size]="12" />
+          <span>Move down</span>
+        </button>
+
+        <div class="menu-divider"></div>
+        <button
+          class="menu-item danger"
+          (click)="deleteIssue($event)"
+          role="menuitem"
+        >
+          <app-svg-icon name="x" [size]="12" />
+          <span>Delete issue</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,23 @@
+<div class="app-layout">
+  <!-- Sticky Topbar -->
+  <app-topbar />
+
+  <div class="app-body">
+    <!-- Collapsible Sidebar -->
+    <app-sidebar />
+
+    <!-- Main Workspace -->
+    <main class="workspace" id="main-content">
+      <app-breadcrumb />
+      <div class="workspace-content">
+        <router-outlet />
+      </div>
+    </main>
+  </div>
+
+  <!-- Global Modals, Detail Drawer & Toast Notifications -->
+  <app-create-issue-modal />
+  <app-issue-detail-drawer />
+  <app-confirm-delete-modal />
+  <app-toast-container />
+</div>

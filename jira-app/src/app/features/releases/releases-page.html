@@ -1,0 +1,43 @@
+<div class="releases-container">
+  <div class="page-header">
+    <h1>Releases & Milestones</h1>
+    <p>Track project versions, release progress, and deployment milestones.</p>
+  </div>
+
+  <div class="releases-grid">
+    @for (rel of releases; track rel.version) {
+      <div class="release-card" [class.released]="rel.status === 'released'">
+        <div class="card-head">
+          <div class="version-tag">
+            <app-svg-icon name="releases" [size]="16" />
+            <span class="version-name">{{ rel.version }}</span>
+          </div>
+          <span class="status-badge" [attr.data-status]="rel.status">
+            {{ rel.status.replace('_', ' ') }}
+          </span>
+        </div>
+
+        <div class="card-body">
+          <p class="description">{{ rel.description }}</p>
+
+          <div class="progress-wrap">
+            <div class="progress-info">
+              <span class="pct">{{ rel.progressPct }}% Complete</span>
+              <span class="issues-count">{{ rel.completedIssues }} of {{ rel.totalIssues }} issues</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" [style.width.%]="rel.progressPct"></div>
+            </div>
+          </div>
+
+          <div class="dates-row">
+            <div class="date-item">
+              <span class="label">Release Date:</span>
+              <span class="val">{{ rel.releaseDate }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>
