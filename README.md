@@ -145,6 +145,3 @@ To view the standalone HTML/CSS prototype without running the Angular dev server
 
 ---
 
-## 📄 License
-
-This project is licensed under the [MIT License](LICENSE).
